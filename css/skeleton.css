@@ -28,7 +28,7 @@ body {
     width: 32px;
     font-family: Comic Sans MS;
     font-size: 18;
-    background-image:url(lpanel.png);
+    /* background-image:url(lpanel.png); */
     background-repeat: no-repeat;
     background-color:#333333;
     color: #00cc00;

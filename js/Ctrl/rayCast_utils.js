@@ -1,5 +1,5 @@
 function raycastModule ( props ) {
-	
+	console.log('레이캐스트, props: ', props );
     const pose_mod = props.type;
     const skeleton = props.skeleton;
     let event = props.evt;
@@ -13,15 +13,16 @@ function raycastModule ( props ) {
     const currentBoneAng = props.currentBoneAngle;
 	let obj = obj01_ctrl_cls.get_obj();
     let newVec3 = props.resetVec3;
-    let cam_punkt;
+    let cam_position;
     let scn_group = props.scnGroup;
 
 	switch( pose_mod ){
 		
 		case 'dreh':
 	//========================================================================
-		if(( skeleton.visible && !touchscreen )||( skeleton.visible && !event.isPrimary )) {
+		if(( skeleton.visible && !touchscreen )||( skeleton.visible && !event.isPrimary ) || (skeleton.visible && touchscreen) ) {
 			
+			console.log('터치스크린: ', touchscreen );
 			mouse.x = ( event.pageX / window.innerWidth ) * 2 - 1;
 			mouse.y = -( event.pageY / window.innerHeight ) * 2 + 1;
 			raycaster.setFromCamera( mouse, camera );
@@ -40,11 +41,11 @@ function raycastModule ( props ) {
 				slc_obj.material = mat_auswahl;
 				meldung.innerHTML = "Selected :" + slc_obj.name;
 
-				if( !touchscreen ) {
-					cam_punkt = newVec3.copy( camera.position );
-					slc_obj.parent.worldToLocal( cam_punkt );
+				if( !touchscreen || touchscreen ) {
+					cam_position = newVec3.copy( camera.position );
+					slc_obj.parent.worldToLocal( cam_position );
 
-					obj01_ctrl_cls.cam_normalizeVec( cam_punkt );
+					obj01_ctrl_cls.cam_normalizeVec( cam_position );
 					
 					// dreh_x = event.pageX;
 					// dreh_y = event.pageY;
@@ -65,7 +66,7 @@ function raycastModule ( props ) {
 		break;
 		case 'scal':
 	//========================================================================
-		if(( skeleton.visible && !touchscreen )||( skeleton.visible && !event.isPrimary )) {
+		if(( skeleton.visible && !touchscreen )||( skeleton.visible && !event.isPrimary ) || (skeleton.visible && touchscreen)) {
 			
 			mouse.x = ( event.pageX / window.innerWidth ) * 2 - 1;
 			mouse.y = -( event.pageY / window.innerHeight ) * 2 + 1;
@@ -86,10 +87,10 @@ function raycastModule ( props ) {
 
 				meldung.innerHTML = "Selected :" + slc_obj.name;
 
-				if( !touchscreen ){
+				if( !touchscreen || touchscreen ){
 
-					cam_punkt = newVec3.copy( camera.position );
-					slc_obj.parent.worldToLocal( cam_punkt );
+					cam_position = newVec3.copy( camera.position );
+					slc_obj.parent.worldToLocal( cam_position );
 
 					controls.enabled = false;
 
@@ -111,7 +112,7 @@ function raycastModule ( props ) {
 	//----------------------------------------------------------------
 	case 'posit':
 	//========================================================================
-		if(( skeleton.visible && !touchscreen )||( skeleton.visible && !event.isPrimary )) {
+		if(( skeleton.visible && !touchscreen )||( skeleton.visible && !event.isPrimary ) || (skeleton.visible && touchscreen)) {
 			
 			mouse.x = ( event.pageX / window.innerWidth ) * 2 - 1;
 			mouse.y = -( event.pageY / window.innerHeight ) * 2 + 1;
@@ -131,10 +132,10 @@ function raycastModule ( props ) {
 
 				meldung.innerHTML = " Selected :" + slc_obj.name;
 				
-				if( !touchscreen ) {
+				if( !touchscreen || touchscreen ) {
 
-					cam_punkt = newVec3.copy( camera.position );
-					obj01_ctrl_cls.mark_arr[0].lookAt(cam_punkt);
+					cam_position = newVec3.copy( camera.position );
+					obj01_ctrl_cls.mark_arr[0].lookAt(cam_position);
 
 					let mpos = newVec3;
 

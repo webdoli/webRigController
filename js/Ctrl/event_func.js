@@ -5,11 +5,11 @@ const ctrlHelper = ( event, ctrl_cls, skeleton, renderer, raycast_ ) => {
 	let pose_mode = ctrl_cls.get_poseMode();
 
 	if ( pose_mode == 'nichts' ) {
-
-		skeleton.visible = false;			
-		renderer.domElement.removeEventListener('pointerdown', raycast_);
-		document.getElementById('Pegel').disabled = true;
-		document.getElementById('Pegel').style.display = "none";
+		console.log('x 클릭');
+		// skeleton.visible = false;
+		// renderer.domElement.removeEventListener('pointerdown', raycast_);
+		// document.getElementById('Pegel').disabled = true;
+		// document.getElementById('Pegel').style.display = "none";
 
 	} else {
 
@@ -24,7 +24,6 @@ const ctrlHelper = ( event, ctrl_cls, skeleton, renderer, raycast_ ) => {
 		
 		if( !skeleton.visible ) {	
 			console.log('zeigHelper pos_mode: ', pose_mode );
-            console.log('skeleton: ', skeleton );
 			skeleton.visible = true;
 			renderer.domElement.addEventListener( 'pointerdown', raycast_ );
 		}

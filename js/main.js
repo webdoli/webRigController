@@ -120,9 +120,9 @@ addEventListener( 'mousedown', mouseControl );
 addEventListener( 'touchstart', mouseControl );
 
 function mouseControl( event ){
-
+	console.log('화면 마우스 클릭');
 	if( event.type == "touchstart" ) touchscreen = true;
-
+	
 	control_type['mdown'] = "pointerdown";
 	control_type['mmove'] = "pointermove";
 	control_type['mup'] = "pointerup";
@@ -130,7 +130,6 @@ function mouseControl( event ){
 
 	removeEventListener( 'mousedown', mouseControl );
 	removeEventListener( 'touchstart', mouseControl );
-
 }
 
 //----------------------------------TOUCH PEGLER
@@ -193,31 +192,31 @@ panel.appendChild( ctrlResetBtn );
 let skel_label = CreateGUI.create_text( "Modify: " );
 let poser_ctrl = CreateGUI.pose_ctrl_dom( zeigHelper );
 let fscreen_btn = CreateGUI.create_fullScreen_btn();
-let btx_feld = CreateGUI.create_text( "Background_X: " );
-let btz_feld = CreateGUI.create_text( "Background_Z: " );
-let bty_feld = CreateGUI.create_text( "Background_Y: " );
+let btx_field = CreateGUI.create_text( "Background_X: " );
+let btz_field = CreateGUI.create_text( "Background_Z: " );
+let bty_field = CreateGUI.create_text( "Background_Y: " );
 
 skel_label.appendChild( poser_ctrl );
 panel.appendChild( skel_label );
 viewport.appendChild( fscreen_btn );
 
-let btn_x = CreateGUI.create_mov_ctrl_select_btn( btx_feld, txl, mat_geo_x );
-let btn_z = CreateGUI.create_mov_ctrl_select_btn( btz_feld, txl, mat_geo_z );
-let btn_y = CreateGUI.create_mov_ctrl_select_btn( bty_feld, txl, mat_geo_y );
+let btn_x = CreateGUI.create_mov_ctrl_select_btn( btx_field, txl, mat_geo_x );
+let btn_z = CreateGUI.create_mov_ctrl_select_btn( btz_field, txl, mat_geo_z );
+let btn_y = CreateGUI.create_mov_ctrl_select_btn( bty_field, txl, mat_geo_y );
 
-panel.appendChild(btx_feld);
-panel.appendChild( btz_feld );
-panel.appendChild(bty_feld);
+panel.appendChild(btx_field);
+panel.appendChild( btz_field );
+panel.appendChild(bty_field);
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-var ml_feld = CreateGUI.create_text( "Change Model" );
+var ml_field = CreateGUI.create_text( "Change Model" );
 const change_form = CreateGUI.create_change_model( 
-	controls, models_arr, ml_feld, scene, poser_ctrl, fbxLoader, loadersManager, 
+	controls, models_arr, ml_field, scene, poser_ctrl, fbxLoader, loadersManager, 
 	modelLoad_manager , onProgress, obj01_ctrl_cls, gbox3 );
-ml_feld.appendChild( change_form );
+ml_field.appendChild( change_form );
 
-panel.appendChild( ml_feld );
+panel.appendChild( ml_field );
 
 
 
@@ -227,7 +226,7 @@ panel.appendChild( ml_feld );
 // sfbx_loader.name = "";
 // sfbx_loader.setAttribute( 'accept', '' );
 
-// //ml_feld.appendChild(sfbx_loader);
+// //ml_field.appendChild(sfbx_loader);
 // sfbx_loader.onchange = function( e ) {
 // 	scene.remove( scene.getObjectByName( "PoseModel" ) );
 // 	let flink = URL.createObjectURL( e.target.files[0] );
