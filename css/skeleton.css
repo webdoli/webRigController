@@ -19,7 +19,7 @@ body {
 #leftpanel {
     position: absolute;
     z-index:333;
-    background: rgba(192, 192, 192, 0.5);
+    /* background: rgba(192, 192, 192, 0.5); */
     display:block;
 }
 #ltaste		{
