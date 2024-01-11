@@ -169,21 +169,18 @@ scene.add( gbox_helper );
 function modelLoad_manager( newModel ) {
 	
 	skeleton = newModel.skeleton;
+	console.log('model: ', newModel );
 	let test_model = newModel.model;
 	skeleton_ctrls = newModel.get_model_skeleton_ctrl();
+	
 	obj01_ctrl_cls.set_obj( test_model );
 	auswahl = test_model;
 	ctrlBox_grp = newModel.ctrlBox_grp;
 	scene.add( test_model );
 
-	console.log('model name: ', test_model.name );
-
 	// Theatre 
 	const project = core.getProject('ThreeJS Rig Ctrl Test');
 	const rot_sheet = project.sheet('Rotation');
-	console.log('core: ', core );
-	console.log('testModel rotation.x: ', test_model.rotation.x );
-	console.log('testModel rotation.x: ', test_model.rotation.y );
 	const types = core.types;
 	const default_obj = rot_sheet.object(
 		test_model.name, 
@@ -206,8 +203,9 @@ function modelLoad_manager( newModel ) {
 }
 
 var load_link = "../src/models/hase/hase.fbx";
-gltfLoader_( 'gamjabawi', obj01_ctrl_cls, modelLoad_manager, gbox3 );
-// fbxLoader( load_link, "PoseModel", loadersManager, modelLoad_manager , onProgress, obj01_ctrl_cls, gbox3 );
+let gltf_tex = txl.load('../src/models/rohan/export/rohan_tex_map_diff_rev.jpg');
+gltfLoader_( 'rohan', obj01_ctrl_cls, modelLoad_manager, gbox3, '../src/models/rohan/export/', .25, gltf_tex);
+// fbxLoader( load_link, "PoseModel", loadersManager, modelLoad_manager , onProgress, obj01_ctrl_cls, gbox3, 4 );
 
 
 ////////////////////////////////////////////////////////

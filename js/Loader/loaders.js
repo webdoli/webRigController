@@ -8,8 +8,8 @@ let mat_default = new THREE.LineBasicMaterial( { color: 0x00cc66,linewidth: 2,de
 let mat_ctrl = new THREE.LineBasicMaterial( { color: 0xffcc33,linewidth: 2, depthTest: false, transparent: true } );
 
 class ModelLoad {
-    constructor ( model, ctrl, size ) {
-        
+    constructor ( model, ctrl, size, ctrlSize ) {
+
         this.model = model;
         this.ctrl = ctrl;
         this.materials = [];
@@ -20,7 +20,7 @@ class ModelLoad {
         this.init();
         this.set_scale( size );
         this.setting_bone();
-        this.setting_ctrl();
+        this.setting_ctrl( ctrlSize );
 
     }
 
@@ -116,7 +116,7 @@ class ModelLoad {
         
     }
 
-    setting_ctrl() {
+    setting_ctrl( ctrl_size ) {
         
         for ( let jnt in this.skeleton_all ) {
     
@@ -136,10 +136,11 @@ class ModelLoad {
     
                 // ksprite.position.set( 0, 0, 0 );
                 let origin_axis = new THREE.Box3().setFromObject( ctrl_box );
+                console.log('setting ctrl size: ', ctrl_size );
                 ctrl_box.scale.set( 
-                    1 / origin_axis.getSize( new THREE.Vector3() ).x * 4,
-                    1 / origin_axis.getSize( new THREE.Vector3() ).y * 4,
-                    1 / origin_axis.getSize( new THREE.Vector3() ).z * 4
+                    1 / origin_axis.getSize( new THREE.Vector3() ).x * ctrl_size,
+                    1 / origin_axis.getSize( new THREE.Vector3() ).y * ctrl_size,
+                    1 / origin_axis.getSize( new THREE.Vector3() ).z * ctrl_size
                 );
 
                 this.ctrlBox_grp.push( ctrl_box );
@@ -164,21 +165,22 @@ class ModelLoad {
     
 }
 
-function fbxLoader ( model_url, model_name, loadersManager, callback, onProgress, obj_ctrl, size ){
+function fbxLoader ( model_url, model_name, loadersManager, callback, onProgress, obj_ctrl, size, ctrl_size ){
 	
 	let loader = new FBXLoader( loadersManager );
 
 	loader.load( model_url, fbx => {
         
+        console.log('fbx model: ', fbx );
 		fbx.name = model_name;
-        const newModel = new ModelLoad( fbx, obj_ctrl, size );
+        const newModel = new ModelLoad( fbx, obj_ctrl, size, ctrl_size );
         // callback( fbx );
 		callback( newModel );
 	}, onProgress );
 
 }
 
-function gltfLoader_ ( name, obj_ctrl, callback, size ) {
+function gltfLoader_ ( name, obj_ctrl, callback, size, path, ctrl_size, tex ) {
 
     const gltfLoader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
@@ -187,17 +189,26 @@ function gltfLoader_ ( name, obj_ctrl, callback, size ) {
     dracoLoader.setDecoderPath("https://unpkg.com/three@0.159.0/examples/jsm/libs/draco/");
     gltfLoader.setDRACOLoader( dracoLoader );
 
-    const loader = gltfLoader.setPath( '../src/models/gamja/' );
+    const loader = gltfLoader.setPath( path );
 
     loader.load( name + '.gltf', async function ( gltf ) {
-
+        
         gltf.scene.name = name;
-    	const model = new ModelLoad( gltf.scene, obj_ctrl, size );
+        applyToTex( gltf.scene, tex );
+    	const model = new ModelLoad( gltf.scene, obj_ctrl, size, ctrl_size );
         callback( model );
     
     });
 
 
+}
+
+function applyToTex( model, tex ) {
+    model.traverse( child => {
+        if( child instanceof THREE.Mesh ) {
+            child.material.map = tex;
+        }
+    })
 }
 
 function LoadingsManager ( el, controls ) {
