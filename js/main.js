@@ -1,26 +1,30 @@
 import * as THREE from "three";
-import { GLTFLoader } from 'https://unpkg.com/three@0.159.0/examples/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'https://unpkg.com/three@0.159.0/examples/jsm/loaders/DRACOLoader.js';
-// import 'https://cdn.jsdelivr.net/npm/@theatre/browser-bundles@0.5.0-insiders.88df1ef/dist/core-and-studio.js'
+// import { GLTFLoader } from 'https://unpkg.com/three@0.159.0/examples/jsm/loaders/GLTFLoader.js';
+// import { DRACOLoader } from 'https://unpkg.com/three@0.159.0/examples/jsm/loaders/DRACOLoader.js';
+import 'https://cdn.jsdelivr.net/npm/@theatre/browser-bundles@0.5.0-insiders.88df1ef/dist/core-and-studio.js'
 import Core from "./core.js";
 import { makeTraceInput, onProgress, resize } from "./GUI/right_gui.js";
 import CreateGUI from "./GUI/gui_DOM.js";
 import Environment from "./Model/environment.js";
-import { LoadingsManager, fbxLoader } from "./Loader/loaders.js";
+import { LoadingsManager, fbxLoader, gltfLoader_ } from "./Loader/loaders.js";
 import { ObjCtrl_Cls } from "./Ctrl/control_utils.js";
 import { ctrlHelper, headerBarCtrl_Evt, ctrlReset_Evt, ctrlDrag_Evt, 
 	mouseUpfromRotation_Evt, mouseUpfromScale_Evt, mouseUpfromPositon_Evt } from "./Ctrl/event_func.js";
 
+const { core, studio } = Theatre;
+studio.initialize();
 
+
+// Three.js
 let container = document.getElementById("monitor");
-let core = new Core( container );
+let threejs_core = new Core( container );
 let aspect = { width: window.innerWidth, height: window.innerHeight };
 
-let renderer = core.getRenderer();
-let scene = core.getScene();
-let controls = core.getControl();
-let camera = core.getCameras().mainCam;
-let raycaster = core.getRaycaster();
+let renderer = threejs_core.getRenderer();
+let scene = threejs_core.getScene();
+let controls = threejs_core.getControl();
+let camera = threejs_core.getCameras().mainCam;
+let raycaster = threejs_core.getRaycaster();
 let mouse = new THREE.Vector2();
 
 // skeleton box material 설정
@@ -59,7 +63,7 @@ function animate() {
 	renderer.render( scene, camera );
 }
 
-core.setScene();
+threejs_core.setScene();
 animate();
 
 CreateGUI.panelResize( panel, bar );
@@ -172,10 +176,38 @@ function modelLoad_manager( newModel ) {
 	ctrlBox_grp = newModel.ctrlBox_grp;
 	scene.add( test_model );
 
+	console.log('model name: ', test_model.name );
+
+	// Theatre 
+	const project = core.getProject('ThreeJS Rig Ctrl Test');
+	const rot_sheet = project.sheet('Rotation');
+	console.log('core: ', core );
+	console.log('testModel rotation.x: ', test_model.rotation.x );
+	console.log('testModel rotation.x: ', test_model.rotation.y );
+	const types = core.types;
+	const default_obj = rot_sheet.object(
+		test_model.name, 
+		{
+			rotation: types.compound({
+				x: types.number( test_model.rotation.x, { range: [ -2, 2 ] }),
+				y: types.number( test_model.rotation.y, { range: [ -2, 2 ] }),
+				z: types.number( test_model.rotation.z, { range: [ -2, 2 ] }),
+			})
+		}
+	);
+
+	default_obj.onValuesChange((values) => {
+		const { x, y, z } = values.rotation;
+
+		test_model.rotation.set( x* Math.PI, y * Math.PI, z * Math.PI );
+	})
+
+
 }
 
 var load_link = "../src/models/hase/hase.fbx";
-fbxLoader( load_link, "PoseModel", loadersManager, modelLoad_manager , onProgress, obj01_ctrl_cls, gbox3 );
+gltfLoader_( 'gamjabawi', obj01_ctrl_cls, modelLoad_manager, gbox3 );
+// fbxLoader( load_link, "PoseModel", loadersManager, modelLoad_manager , onProgress, obj01_ctrl_cls, gbox3 );
 
 
 ////////////////////////////////////////////////////////

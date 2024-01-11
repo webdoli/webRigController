@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { FBXLoader } from 'https://unpkg.com/three@0.159.0/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from 'https://unpkg.com/three@0.159.0/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'https://unpkg.com/three@0.159.0/examples/jsm/loaders/DRACOLoader.js';
 import { makeTrace } from "../GUI/right_gui.js";
 
 let mat_default = new THREE.LineBasicMaterial( { color: 0x00cc66,linewidth: 2,depthTest: false, transparent: true } );
@@ -176,6 +178,28 @@ function fbxLoader ( model_url, model_name, loadersManager, callback, onProgress
 
 }
 
+function gltfLoader_ ( name, obj_ctrl, callback, size ) {
+
+    const gltfLoader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    // const loadingManager = new THREE.LoadingManager();
+
+    dracoLoader.setDecoderPath("https://unpkg.com/three@0.159.0/examples/jsm/libs/draco/");
+    gltfLoader.setDRACOLoader( dracoLoader );
+
+    const loader = gltfLoader.setPath( '../src/models/gamja/' );
+
+    loader.load( name + '.gltf', async function ( gltf ) {
+
+        gltf.scene.name = name;
+    	const model = new ModelLoad( gltf.scene, obj_ctrl, size );
+        callback( model );
+    
+    });
+
+
+}
+
 function LoadingsManager ( el, controls ) {
 
     this.loadingManager = new THREE.LoadingManager();
@@ -208,4 +232,4 @@ function boneCtrl( obj3 ) {
 
 }
 
-export { LoadingsManager, boneCtrl, ModelLoad, fbxLoader }
+export { LoadingsManager, boneCtrl, ModelLoad, fbxLoader, gltfLoader_ }
